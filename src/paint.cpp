@@ -18,9 +18,9 @@ void Paint::mainloop()
 	int prev_x, prev_y;
 	SDL_GetMouseState(&prev_x, &prev_y);
 
-	std::vector<std::vector<uint32_t>> backups{ m_gfx->texbuf() };
-
 	int radius = 1;
+
+	m_backups.emplace_back(m_gfx->texbuf());
 
 	read_settings();
 
@@ -34,25 +34,26 @@ void Paint::mainloop()
 			case SDL_MOUSEBUTTONDOWN: mouse = true; break;
 			case SDL_MOUSEBUTTONUP:
 				mouse = false;
-				backups.emplace_back(m_gfx->texbuf());
-				if (backups.size() >= settings::cache_num)
+
+				m_backups.emplace_back(m_gfx->texbuf());
+				if (m_backups.size() >= settings::cache_num)
 				{
-					backups.erase(backups.begin());
+					m_backups.erase(m_backups.begin());
 				}
 				break;
 			case SDL_KEYDOWN:
 				switch (evt.key.keysym.sym)
 				{
-				case SDLK_ESCAPE:
+				case SDLK_c:
 					m_gfx->clear();
-					backups.clear();
-					backups.emplace_back(m_gfx->texbuf());
+					m_backups.clear();
+					m_backups.emplace_back(m_gfx->texbuf());
 					break;
 				case SDLK_z:
-					if (backups.size() > 1)
+					if (m_backups.size() > 1)
 					{
-						backups.erase(backups.end() - 1);
-						m_gfx->set_texbuf(backups[backups.size() - 1]);
+						m_backups.erase(m_backups.end() - 1);
+						m_gfx->set_texbuf(m_backups[m_backups.size() - 1]);
 					}
 					break;
 				case SDLK_e:
@@ -73,16 +74,44 @@ void Paint::mainloop()
 					else
 						radius = 1;
 					break;
+				case SDLK_l:
+					m_mode = Mode::LINE;
+
+					if (mouse)
+					{
+						mouse = false;
+
+						m_backups.emplace_back(m_gfx->texbuf());
+						if (m_backups.size() >= settings::cache_num)
+						{
+							m_backups.erase(m_backups.begin());
+						}
+					}
+					break;
 				}
 				break;
 			}
 		}
 
-		if (mouse) mouse_down(prev_x, prev_y, radius);
-		
-		SDL_GetMouseState(&prev_x, &prev_y);
+		if (mouse)
+			mouse_down(prev_x, prev_y, radius);
 
 		m_gfx->render();
+
+		if (m_mode == Mode::LINE)
+		{
+			int x, y;
+			SDL_GetMouseState(&x, &y);
+
+			SDL_SetRenderDrawColor(m_gfx->rend(), 255, 255, 255, 255);
+			SDL_RenderDrawLine(m_gfx->rend(), prev_x, prev_y, x, y);
+			SDL_SetRenderDrawColor(m_gfx->rend(), 0, 0, 0, 255);
+
+			SDL_RenderPresent(m_gfx->rend());
+		}
+		
+		if (m_mode != Mode::LINE)
+			SDL_GetMouseState(&prev_x, &prev_y);
 	}
 }
 
@@ -100,5 +129,19 @@ void Paint::mouse_down(int px, int py, int radius)
 	case Mode::ERASE:
 		m_gfx->draw_line(px, py, x, y, { 0, 0, 0 }, radius);
 		break;
+	case Mode::LINE:
+		m_gfx->draw_line(px, py, x, y, { 255, 255, 255 }, radius);
+		save_to_backup(m_gfx->texbuf());
+		m_mode = Mode::NORMAL;
+		break;
 	}
+}
+
+
+void Paint::save_to_backup(std::vector<uint32_t>& elem)
+{
+	m_backups.emplace_back(elem);
+
+	if (m_backups.size() >= settings::cache_num)
+		m_backups.erase(m_backups.begin());
 }

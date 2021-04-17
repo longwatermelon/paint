@@ -53,7 +53,14 @@ void Paint::mainloop()
 						m_gfx->set_texbuf(backups[backups.size() - 1]);
 					}
 					break;
+				case SDLK_e:
+					m_mode = Mode::ERASE;
+					break;
+				case SDLK_d:
+					m_mode = Mode::NORMAL;
+					break;
 				}
+				break;
 			}
 		}
 
@@ -75,6 +82,9 @@ void Paint::mouse_down(int px, int py)
 	{
 	case Mode::NORMAL:
 		m_gfx->draw_line(px, py, x, y, { 255, 255, 255 });
+		break;
+	case Mode::ERASE:
+		m_gfx->draw_line(px, py, x, y, { 0, 0, 0 }, 20);
 		break;
 	}
 }

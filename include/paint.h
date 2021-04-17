@@ -6,7 +6,8 @@
 
 enum class Mode
 {
-	NORMAL
+	NORMAL,
+	ERASE
 };
 
 

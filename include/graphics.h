@@ -19,7 +19,9 @@ public:
 
 	void draw_pixel(int x, int y, SDL_Color col);
 
-	void draw_line(float x1, float y1, float x2, float y2, SDL_Color col);
+	void draw_line(float x1, float y1, float x2, float y2, SDL_Color col, int thickness = 1);
+
+	void draw_circle(int cx, int cy, int r, SDL_Color col);
 
 	SDL_Renderer* rend() const { return m_rend; }
 	SDL_Window* window() const { return m_window; }

@@ -1,4 +1,5 @@
 #include "../include/graphics.h"
+#include <cmath>
 
 
 Graphics::Graphics(const char* title)
@@ -45,11 +46,12 @@ void Graphics::clear()
 
 void Graphics::draw_pixel(int x, int y, SDL_Color col)
 {
-	m_texbuf[y * SCREEN_W + x] = 0x00000000 | col.r << 16 | col.g << 8 | col.b;
+	if (y * SCREEN_W + x < 1000 * 1000)
+		m_texbuf[y * SCREEN_W + x] = 0x00000000 | col.r << 16 | col.g << 8 | col.b;
 }
 
 
-void Graphics::draw_line(float x1, float y1, float x2, float y2, SDL_Color col)
+void Graphics::draw_line(float x1, float y1, float x2, float y2, SDL_Color col, int thickness)
 {
 	float dx = x2 - x1;
 	float dy = y2 - y1;
@@ -69,7 +71,7 @@ void Graphics::draw_line(float x1, float y1, float x2, float y2, SDL_Color col)
 
 		for (float x = x1; x < x2; ++x)
 		{
-			draw_pixel(x, y, col);
+			draw_circle(x, y, thickness, col);
 			y += a;
 		}
 	}
@@ -86,8 +88,26 @@ void Graphics::draw_line(float x1, float y1, float x2, float y2, SDL_Color col)
 
 		for (float y = y1; y < y2; ++y)
 		{
-			draw_pixel(x, y, col);
+			draw_circle(x, y, thickness, col);
 			x += a;
+		}
+	}
+}
+
+
+void Graphics::draw_circle(int cx, int cy, int r, SDL_Color col)
+{
+	for (int y = cy - r; y < cy + r; ++y)
+	{
+		for (int x = cx - r; x < cx + r; ++x)
+		{
+			int dx = cx - x;
+			int dy = cy - y;
+
+			if (std::sqrtf((float)(dx * dx) + (float)(dy * dy)) <= (float)r)
+			{
+				draw_pixel(x, y, col);
+			}
 		}
 	}
 }

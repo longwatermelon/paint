@@ -2,16 +2,16 @@
 small drawing application
 
 # controls
-c: clear screen
+C: clear screen
 
-z: undo last action
+Z: undo last action
 
 
-e: change mode to erase
+E: change mode to erase
 
-d: change mode to draw
+D: change mode to draw
 
-l: change mode to line
+L: change mode to line
 
 
 up: increase brush size

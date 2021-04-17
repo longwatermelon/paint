@@ -67,6 +67,12 @@ void Paint::mainloop()
 				case SDLK_DOWN:
 					if (--radius <= 0) radius = 1;
 					break;
+				case SDLK_LSHIFT:
+					if (radius == 1)
+						radius = 50;
+					else
+						radius = 1;
+					break;
 				}
 				break;
 			}

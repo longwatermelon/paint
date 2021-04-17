@@ -1,4 +1,5 @@
 #include "../include/paint.h"
+#include "../include/settings.h"
 
 
 Paint::Paint(const char* title)
@@ -17,6 +18,10 @@ void Paint::mainloop()
 	int prev_x, prev_y;
 	SDL_GetMouseState(&prev_x, &prev_y);
 
+	std::vector<std::vector<uint32_t>> backups{ m_gfx->texbuf() };
+
+	read_settings();
+
 	while (running)
 	{
 		while (SDL_PollEvent(&evt))
@@ -25,17 +30,34 @@ void Paint::mainloop()
 			{
 			case SDL_QUIT: running = false; break;
 			case SDL_MOUSEBUTTONDOWN: mouse = true; break;
-			case SDL_MOUSEBUTTONUP: mouse = false; break;
+			case SDL_MOUSEBUTTONUP:
+				mouse = false;
+				backups.emplace_back(m_gfx->texbuf());
+				if (backups.size() >= settings::cache_num)
+				{
+					backups.erase(backups.begin());
+				}
+				break;
 			case SDL_KEYDOWN:
 				switch (evt.key.keysym.sym)
 				{
-				case SDLK_ESCAPE: m_gfx->clear(); break;
+				case SDLK_ESCAPE:
+					m_gfx->clear();
+					backups.clear();
+					backups.emplace_back(m_gfx->texbuf());
+					break;
+				case SDLK_z:
+					if (backups.size() > 1)
+					{
+						backups.erase(backups.end() - 1);
+						m_gfx->set_texbuf(backups[backups.size() - 1]);
+					}
+					break;
 				}
 			}
 		}
 
 		if (mouse) mouse_down(prev_x, prev_y);
-
 		
 		SDL_GetMouseState(&prev_x, &prev_y);
 

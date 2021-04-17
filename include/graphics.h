@@ -98,6 +98,9 @@ public:
 		}
 	}
 
+	std::vector<uint32_t> texbuf() const { return m_texbuf; }
+	void set_texbuf(std::vector<uint32_t> texbuf) { m_texbuf = texbuf; }
+
 private:
 	SDL_Window* m_window{ nullptr };
 	SDL_Renderer* m_rend{ nullptr };

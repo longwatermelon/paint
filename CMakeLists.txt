@@ -9,9 +9,11 @@ project(paint)
 add_executable(paint
 	src/main.cpp
 	src/paint.cpp
+	src/settings.cpp
 	include/paint.h
 	include/graphics.h
 	include/utils.h
+	include/settings.h
 )
 
 set_property(TARGET paint PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -34,5 +36,21 @@ find_path(SDL2_INCLUDE_DIR
   PATH_SUFFIXES SDL2-2.0.14/include
 )
 
-include_directories(${SDL2_INCLUDE_DIR} ${OPENCV_INCLUDE})
-target_link_libraries(paint ${SDL2_LIB} ${SDL2MAIN_LIB} ${OPENCV_LIB})
+find_library(JSON_D_LIB
+	NAMES json.lib
+	HINTS ENV{CMAKE_PREFIX_PATH}
+	PATH_SUFFIXES json/json/lib/debug
+)
+find_library(JSON_R_LIB
+	NAMES json.lib
+	HINTS ENV{CMAKE_PREFIX_PATH}
+	PATH_SUFFIXES json/json/lib/release
+)
+find_path(JSON_INCLUDE
+	NAMES json.h
+	HINTS ENV{CMAKE_PREFIX_PATH}
+	PATH_SUFFIXES json/json/include
+)
+
+include_directories(${SDL2_INCLUDE_DIR} ${JSON_INCLUDE})
+target_link_libraries(paint ${SDL2_LIB} ${SDL2MAIN_LIB} debug ${JSON_D_LIB} optimized ${JSON_R_LIB})

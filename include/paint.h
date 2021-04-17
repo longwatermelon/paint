@@ -1,6 +1,7 @@
 #pragma once
 #include "graphics.h"
 #include <memory>
+#include <vector>
 
 
 enum class Mode

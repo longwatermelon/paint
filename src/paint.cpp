@@ -20,6 +20,8 @@ void Paint::mainloop()
 
 	std::vector<std::vector<uint32_t>> backups{ m_gfx->texbuf() };
 
+	int radius = 1;
+
 	read_settings();
 
 	while (running)
@@ -59,12 +61,18 @@ void Paint::mainloop()
 				case SDLK_d:
 					m_mode = Mode::NORMAL;
 					break;
+				case SDLK_UP:
+					if (++radius >= 50) radius = 50;
+					break;
+				case SDLK_DOWN:
+					if (--radius <= 0) radius = 1;
+					break;
 				}
 				break;
 			}
 		}
 
-		if (mouse) mouse_down(prev_x, prev_y);
+		if (mouse) mouse_down(prev_x, prev_y, radius);
 		
 		SDL_GetMouseState(&prev_x, &prev_y);
 
@@ -73,7 +81,7 @@ void Paint::mainloop()
 }
 
 
-void Paint::mouse_down(int px, int py)
+void Paint::mouse_down(int px, int py, int radius)
 {
 	int x, y;
 	SDL_GetMouseState(&x, &y);
@@ -81,10 +89,10 @@ void Paint::mouse_down(int px, int py)
 	switch (m_mode)
 	{
 	case Mode::NORMAL:
-		m_gfx->draw_line(px, py, x, y, { 255, 255, 255 });
+		m_gfx->draw_line(px, py, x, y, { 255, 255, 255 }, radius);
 		break;
 	case Mode::ERASE:
-		m_gfx->draw_line(px, py, x, y, { 0, 0, 0 }, 20);
+		m_gfx->draw_line(px, py, x, y, { 0, 0, 0 }, radius);
 		break;
 	}
 }

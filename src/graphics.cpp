@@ -46,7 +46,7 @@ void Graphics::clear()
 
 void Graphics::draw_pixel(int x, int y, SDL_Color col)
 {
-	if (y * SCREEN_W + x < 1000 * 1000)
+	if (y * SCREEN_W + x < 1000 * 1000 && y * SCREEN_W + x >= 0)
 		m_texbuf[y * SCREEN_W + x] = 0x00000000 | col.r << 16 | col.g << 8 | col.b;
 }
 
@@ -101,6 +101,8 @@ void Graphics::draw_circle(int cx, int cy, int r, SDL_Color col)
 	{
 		for (int x = cx - r; x < cx + r; ++x)
 		{
+			if (x <= 0 || x >= 1000 || y <= 0 || y >= 1000) continue;
+
 			int dx = cx - x;
 			int dy = cy - y;
 

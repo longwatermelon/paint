@@ -20,7 +20,7 @@ public:
 
 	void mainloop();
 
-	void mouse_down(int prev_x, int prev_y);
+	void mouse_down(int prev_x, int prev_y, int radius);
 
 private:
 	std::unique_ptr<Graphics> m_gfx;

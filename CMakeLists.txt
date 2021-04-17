@@ -10,6 +10,7 @@ add_executable(paint
 	src/main.cpp
 	src/paint.cpp
 	src/settings.cpp
+	src/graphics.cpp
 	include/paint.h
 	include/graphics.h
 	include/utils.h

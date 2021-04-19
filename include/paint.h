@@ -2,6 +2,7 @@
 #include "graphics.h"
 #include <memory>
 #include <vector>
+#include <string>
 
 
 enum class Mode
@@ -24,6 +25,8 @@ public:
 	void mouse_down(int prev_x, int prev_y, int radius);
 
 	void save_to_backup(std::vector<uint32_t>& elem);
+
+	std::string make_title(int brush_size);
 
 private:
 	std::unique_ptr<Graphics> m_gfx;

@@ -112,6 +112,8 @@ void Paint::mainloop()
 		
 		if (m_mode != Mode::LINE)
 			SDL_GetMouseState(&prev_x, &prev_y);
+
+		SDL_SetWindowTitle(m_gfx->window(), make_title(radius).c_str());
 	}
 }
 
@@ -144,4 +146,21 @@ void Paint::save_to_backup(std::vector<uint32_t>& elem)
 
 	if (m_backups.size() >= settings::cache_num)
 		m_backups.erase(m_backups.begin());
+}
+
+
+std::string Paint::make_title(int brush_size)
+{
+	std::string ret = "paint | ";
+
+	switch (m_mode)
+	{
+	case Mode::ERASE: ret += "ERASE | "; break;
+	case Mode::NORMAL: ret += "NORMAL | "; break;
+	case Mode::LINE: ret += "LINE | "; break;
+	}
+
+	ret += "brush size " + std::to_string(brush_size);
+
+	return ret;
 }

@@ -88,6 +88,10 @@ void Paint::mainloop()
 						}
 					}
 					break;
+				case SDLK_1: m_color = { 255, 0, 0 }; break;
+				case SDLK_2: m_color = { 0, 255, 0 }; break;
+				case SDLK_3: m_color = { 0, 0, 255 }; break;
+				case SDLK_4: m_color = { 255, 255, 255 }; break;
 				}
 				break;
 			}
@@ -103,7 +107,7 @@ void Paint::mainloop()
 			int x, y;
 			SDL_GetMouseState(&x, &y);
 
-			SDL_SetRenderDrawColor(m_gfx->rend(), 255, 255, 255, 255);
+			SDL_SetRenderDrawColor(m_gfx->rend(), m_color.r, m_color.g, m_color.b, 255);
 			SDL_RenderDrawLine(m_gfx->rend(), prev_x, prev_y, x, y);
 			SDL_SetRenderDrawColor(m_gfx->rend(), 0, 0, 0, 255);
 
@@ -126,13 +130,13 @@ void Paint::mouse_down(int px, int py, int radius)
 	switch (m_mode)
 	{
 	case Mode::NORMAL:
-		m_gfx->draw_line(px, py, x, y, { 255, 255, 255 }, radius);
+		m_gfx->draw_line(px, py, x, y, m_color, radius);
 		break;
 	case Mode::ERASE:
 		m_gfx->draw_line(px, py, x, y, { 0, 0, 0 }, radius);
 		break;
 	case Mode::LINE:
-		m_gfx->draw_line(px, py, x, y, { 255, 255, 255 }, radius);
+		m_gfx->draw_line(px, py, x, y, m_color, radius);
 		save_to_backup(m_gfx->texbuf());
 		m_mode = Mode::NORMAL;
 		break;

@@ -34,4 +34,6 @@ private:
 	Mode m_mode{ Mode::NORMAL };
 
 	std::vector<std::vector<uint32_t>> m_backups;
+
+	SDL_Color m_color{ 255, 255, 255 };
 };

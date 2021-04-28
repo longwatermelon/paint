@@ -1,6 +1,10 @@
 # paint
 small drawing application
 
+# dependencies
+[json](https://github.com/longwatermelon/json)
+SDL2
+
 # controls
 C: clear screen
 
